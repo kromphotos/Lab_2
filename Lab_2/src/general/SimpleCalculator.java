@@ -402,17 +402,27 @@ public class SimpleCalculator {
         for (int i = 0; i < expression.length(); i++) {
             char c = expression.charAt(i);
             
+            // Если это оператор
             if (c == '+' || c == '-' || c == '*' || c == '/') {
-                if (currentNumber.length() > 0) {
-                    parts.add(currentNumber.toString());
-                    currentNumber = new StringBuilder();
+                // Особый случай: минус может быть частью отрицательного числа
+                if (c == '-' && (i == 0 || isOperator(expression.charAt(i - 1)) || expression.charAt(i - 1) == '(')) {
+                    // Это отрицательное число, а не оператор
+                    currentNumber.append(c);
+                } else {
+                    // Это оператор - сохраняем число и оператор
+                    if (currentNumber.length() > 0) {
+                        parts.add(currentNumber.toString());
+                        currentNumber = new StringBuilder();
+                    }
+                    parts.add(String.valueOf(c));
                 }
-                parts.add(String.valueOf(c));
             } else {
+                // Добавляем символ к текущему числу
                 currentNumber.append(c);
             }
         }
         
+        // Добавляем последнее число
         if (currentNumber.length() > 0) {
             parts.add(currentNumber.toString());
         }
